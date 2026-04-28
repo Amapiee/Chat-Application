@@ -13,8 +13,10 @@ import ProfilePage from './pages/ProfilePage.jsx';
 import SettingPage from './pages/SettingPage.jsx';
 
 const App = () => {
-  const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
+  const { authUser, checkAuth, isCheckingAuth, onlineUsers } = useAuthStore();
   const { theme } = useThemeStore();  
+
+  console.log("Online Users:", onlineUsers);
 
   useEffect(() => {
     checkAuth();

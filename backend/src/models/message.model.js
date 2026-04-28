@@ -22,13 +22,9 @@ const messageSchema = new mongoose.Schema(
         image: {
             // URL of the image
             type: String,
-        },
-
-        timestamp: {
-            type: Date,
-            default: Date.now,
-        }
-    }
+        },    
+    },
+    { timestamps: true }
 )
 
 const Message = mongoose.model("Message", messageSchema);

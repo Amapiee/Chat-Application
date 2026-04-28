@@ -15,6 +15,8 @@ import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import { app, server} from "./lib/socket.js";
+import path from "path";
 
 // 1. Ép ưu tiên IPv4 để xử lý lỗi querySrv DNS
 dns.setDefaultResultOrder('ipv4first');
@@ -22,9 +24,8 @@ dns.setDefaultResultOrder('ipv4first');
 // 2. Cấu hình biến môi trường
 dotenv.config();
 
-const app = express();
-
 const PORT = process.env.PORT || 5001;
+const __dirname = path.resolve();
 
 // 3. MIDDLEWARE xử lý JSON
 app.use(express.json({limit: '10mb'})); // Để đọc được dữ liệu JSON từ Postman
@@ -39,14 +40,20 @@ app.use(cookieParser()); // Để đọc được cookie từ request
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
-// 5. KHỞI ĐỘNG SERVER (Chỉ chạy khi DB đã sẵn sàng)
+if(process.env.Node_ENV === "production"){
+    app.use(express.static(path.join(__dirname, "frontend/dist")));
+
+    app.get("*", (req, res) => {
+        res.sendFile(path.join(__dirname, "frontend/dist/index.html"));
+    });
+}
+
+// 5. KHỞI ĐỘNG SERVER 
 const startServer = async () => {
     try {
-        // Kết nối Database trước
         await connectDB();
         
-        // Nếu thành công mới bắt đầu nghe các request
-        app.listen(PORT, () => {
+        server.listen(PORT, () => {
             console.log("Server is running on port: " + PORT);
         });
     } catch (error) {
