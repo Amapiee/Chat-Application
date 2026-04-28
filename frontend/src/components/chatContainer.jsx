@@ -89,7 +89,7 @@ const chatContainer = () => {
           </div>
         </div>
         ))}
-        <div ref={MesageEndRef} />
+        <div ref={mesageEndRef} />
       </div>
 
       <MessageInput />
